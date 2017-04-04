@@ -1,10 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
-    <meta charset="UTF-8">
-    <title>hello{{count}}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>novel downloader</title>
+
+    <!-- Bootstrap -->
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron well">
+                <h2>
+                    Hello, world!
+                </h2>
+                <p>
+                    downloading {{name}}
+                </p>
+                <p>
+                    <a class="btn btn-primary btn-large" href="#">Learn more</a>
+                </p>
+            </div>
+            <table class="table table-condensed table-hover">
+                <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        文件名
+                    </th>
+                    <th>
+                        来源网站
+                    </th>
+                    <th>
+                        下载状态
+                    </th>
+                    <th>
+                        下载连接
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for novel in novels %}
+                <tr>
+                    <td>
+                        {{novel.id}}
+                    </td>
+                    <td>
+                        {{novel.name}}
+                    </td>
+                    <td>
+                        {{novel.from}}
+                    </td>
+                    <td>
+                        {{novel.state}}
+                    </td>
+                    <td>
+                        {% if novel.state==100 %}
+                        <a class="btn btn-primary btn-large" href="{{novel.download}}">下载</a>
+                        {% else %}
+                        <a class="btn btn-primary btn-large" disabled="disabled" href="#">下载</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.js"></script>
+<script language="JavaScript">
+function myrefresh(){
+window.location.reload();
+}
+setTimeout('myrefresh()',1000); //指定1秒刷新一次
 
+</script>
 </body>
 </html>
