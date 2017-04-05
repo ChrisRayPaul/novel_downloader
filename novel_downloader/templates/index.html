@@ -20,17 +20,55 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <div class="jumbotron well">
-                <h2>
-                    Hello, world!
-                </h2>
-                <p>
-                    downloading {{name}}
-                </p>
-                <p>
-                    <a class="btn btn-primary btn-large" href="#">Learn more</a>
-                </p>
+
+            <div class="page-header">
+                <h1>欢迎使用在线小说下载服务 v0.1</h1>
             </div>
+            <br>
+            <p>
+                <strong>关于本站：</strong>
+            <ul>
+                <li>本网站提供在线小说网站内容抓取打包下载业务。</li>
+                <li>下载文件为zip格式，采用LZMA算法进行压缩，请采用相应软件进行下载后解压缩。windows上推荐使用<a
+                        target="_blank" href="http://www.7-zip.org/download.html">7zip</a>进行解压。
+                </li>
+                <li>本网站仅供教学研究，请勿用于商业用途。</li>
+                <li class="label label-success label-large">AISTLAB 2017-04-05</li>
+            </ul>
+            </p>
+            <p>
+                <strong>使用方法：</strong>
+            <ol>
+                <li>在所支持的网站页面搜索喜欢的小说，进入小说目录页面。</li>
+                <li>在页面地址栏最前方加入d.aistl.com:888?</li>
+                <li>页面会自动跳转到本网站，等待小说下载完成，点击对应下载按钮完成小说下载。</li>
+            </ol>
+            </p>
+            <br><br>
+            <p>
+                <strong>目前支持网站列表：</strong>
+                {% for site in sites %}
+                <a href="{{site}}" target="_blank" class="label label-primary">{{site}}</a>
+                {% endfor %}
+            </p>
+            <br> <br>
+            <p>
+                <strong>当前下载链接：</strong><a target="_blank" href="{{name}}" class="label label-warning">{{name}}</a>
+            </p>
+
+            {% if urlerror %}
+            <p>
+                <span class="label label-danger">发生异常，请检查网址是否正确。</span>错误代码：<font color="red">{{urlerror}}</font>
+            </p>
+            {% else %}
+
+            {% if alreadyid %}
+            <p>
+                <span class="label label-success">文件已经存在，请直接下载。</span>
+                <a href="#state{{alreadyid}}"> <font color="red">#{{alreadyid}}</font></a>
+            </p>
+            {% endif %}
+
             <table class="table table-condensed table-hover">
                 <thead>
                 <tr>
@@ -53,7 +91,7 @@
                 </thead>
                 <tbody>
                 {% for novel in novels %}
-                <tr>
+                <tr id="row{{novel.id}}">
                     <td>
                         {{novel.id}}
                     </td>
@@ -64,29 +102,61 @@
                         {{novel.from}}
                     </td>
                     <td>
-                        {{novel.state}}
+                        <div class="progress progress-striped active">
+                            <div id="progressbar{{novel.id}}" class="progress-bar progress-bar-success" role="progressbar"
+                                 aria-valuenow="{{novel.state}}"
+                                 aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+                                <span id="state{{novel.id}}" name="state{{novel.id}}">{{novel.state}}</span>% 完成
+                            </div>
+                        </div>
                     </td>
                     <td>
-                        {% if novel.state==100 %}
-                        <a class="btn btn-primary btn-large" href="{{novel.download}}">下载</a>
-                        {% else %}
-                        <a class="btn btn-primary btn-large" disabled="disabled" href="#">下载</a>
-                        {% endif %}
+                        <a id="download{{novel.id}}" class="btn btn-primary btn-sm" disabled="disabled"
+                           href="#">下载</a>
                     </td>
                 </tr>
                 {% endfor %}
                 </tbody>
             </table>
+            {% endif %}
         </div>
     </div>
 </div>
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.js"></script>
-<script language="JavaScript">
-function myrefresh(){
-window.location.reload();
-}
-setTimeout('myrefresh()',1000); //指定1秒刷新一次
+<script type="text/javascript">
+    $(function () {
+        //定时请求刷新
+        var iCount = setInterval(update, 100);
+
+        function update() {
+            $.ajax({
+                type: "get",//使用get方法访问后台
+                dataType: "json",//返回json格式的数据
+                url: "update",//要访问的后台地址
+                //data: "pageIndex=" + pageIndex,//要发送的数据
+                //complete :function(){$("#load").hide();},//AJAX请求完成时隐藏loading提示
+                success: function (msg) {//msg为返回的数据，在这里做数据绑定
+                    var downloading = 0;
+                    msg.forEach(function (m) {
+                        $("#state" + m["id"]).text(m["state"]);
+                        $("#progressbar" + m["id"]).attr("style", "width:" + m["state"] + "%");
+                        if (m["state"] == 100) {
+                            $("#download" + m["id"]).attr("disabled", false);
+                        }
+                        else {
+                            $("#download" + m["id"]).attr("disabled", true);
+                            downloading++;
+                        }
+                    });
+                    if (downloading == 0) {
+                        clearInterval(iCount);
+                    }
+                } //success
+            })//ajax
+        }//update
+    })
+
 
 </script>
 </body>
