@@ -15,7 +15,7 @@ setup(
     author_email='winxos@hotmail.com',
     url='https://github.com/winxos/novel_downloader',  # use the URL to the github repo
     download_url='https://github.com/winxos/novel_downloader',
-    keywords=['scrape', 'winxos', 'aist'],  # arbitrary keywords
+    keywords=['novel', 'winxos', 'aist'],  # arbitrary keywords
     classifiers=[
         # How mature is this project? Common values are
         #   3 - Alpha
@@ -42,7 +42,4 @@ setup(
     install_requires=['aist_novel_grab'],
     packages=find_packages(),
     package_dir={'novel_downloader': 'novel_downloader'},
-    package_data={
-        "novel_grab": ["*.json"]
-    }
 )

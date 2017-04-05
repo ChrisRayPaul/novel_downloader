@@ -12,9 +12,9 @@ novels = [  # fake array of posts
     {
         'id': 1,
         'name': '人民的民义',
-        'from': 'ffff2',
+        'from': 'http://test.demo.com',
         'state': 100,
-        'download': 'ccc',
+        'download': '#',
     }
 ]
 
@@ -29,8 +29,8 @@ def index_novel(n):
 def add_item(n, f):
     id = index_novel(n)
     if id < 0:
-        novels.insert(0, {"id": len(novels) + 1, "name": n, "from": f, "state": 0, "download": ""})
-        return True, 0
+        novels.append({"id": len(novels) + 1, "name": n, "from": f, "state": 0, "download": ""})
+        return True, len(novels)-1
     else:
         return False, id
 
@@ -40,9 +40,7 @@ def start_thread(id):
     for i in range(101):
         novels[id]['state'] = i
         time.sleep(0.1)
-
-
-cache = {}
+        print("%d -> %d" % (id, i))
 
 
 @app.route('/update')
@@ -52,7 +50,6 @@ def update():
 
 @app.route('/')
 def index():
-    global cache
     url = request.query_string.decode('utf8')
     print(url)
     if not str(url).startswith('http'):
@@ -62,8 +59,10 @@ def index():
     except urllib.error.URLError or urllib.error.HTTPError as e:
         return render_template('index.html', name=url, urlerror=str(e.reason))
     ret, id = add_item(url, url)
+    print(id)
     if ret:  # first add
         t = threading.Thread(target=start_thread, args=(id,))
+        print(t)
         t.start()
         return render_template('index.html', sites=['http://www.aoyuge.com', 'http://book.zongheng.com'],
                                name=url, novels=novels)
@@ -76,6 +75,6 @@ def index():
 
 if __name__ == '__main__':
     """
-    insert novel.weolee.com?   before your novel chapters index page.
+    insert d.weolee.com:888?   before your novel chapters index page.
     """
-    app.run(host='0.0.0.0', debug=True, port=80)
+    app.run(host='0.0.0.0', debug=True, port=888)
