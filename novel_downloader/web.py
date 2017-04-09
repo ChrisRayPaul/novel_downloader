@@ -29,13 +29,6 @@ novels = [  # fake array of posts
         'download': '校园小神医 作者：伤贤梦魂.7z',
     },
     {
-        'id': 1,
-        'name': '星际穿梭商店 作者：忘记二少',
-        'from': 'http://www.aoyuge.com/32/32363/index.html',
-        'state': 100,
-        'download': '星际穿梭商店 作者：忘记二少.7z',
-    },
-    {
         'id': 3,
         'name': '大刁民 作者：仲星羽',
         'from': 'http://book.zongheng.com/showchapter/43467.html',
