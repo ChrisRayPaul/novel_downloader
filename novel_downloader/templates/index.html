@@ -40,7 +40,7 @@
                 <strong>使用方法：</strong>
             <ol>
                 <li>在所支持的网站页面搜索喜欢的小说，进入小说目录页面。</li>
-                <li>在页面地址栏最前方加入d.weolee.com:888?</li>
+                <li>在页面地址栏最前方加入d.weolee.com:777?</li>
                 <li>页面会自动跳转到本网站，等待小说下载完成，点击对应下载按钮完成小说下载。</li>
             </ol>
             </p>
@@ -92,15 +92,9 @@
                 <tbody>
                 {% for novel in novels %}
                 <tr id="row{{novel.id}}">
-                    <td>
-                        {{novel.id}}
-                    </td>
-                    <td>
-                        {{novel.name}}
-                    </td>
-                    <td>
-                        {{novel.from}}
-                    </td>
+                    <td>{{novel.id}}</td>
+                    <td>{{novel.name}}</td>
+                    <td>{{novel.from}}</td>
                     <td>
                         <div class="progress progress-striped active">
                             <div id="progressbar{{novel.id}}" class="progress-bar progress-bar-success" role="progressbar"
@@ -112,7 +106,7 @@
                     </td>
                     <td>
                         <a id="download{{novel.id}}" class="btn btn-primary btn-sm" disabled="disabled"
-                           href="#">下载</a>
+                           href="{{novel.download}}">下载</a>
                     </td>
                 </tr>
                 {% endfor %}
