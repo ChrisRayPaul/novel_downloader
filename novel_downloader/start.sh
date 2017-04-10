@@ -1,1 +1,1 @@
-sudo nohup python3 web.py > flasklog.txt 2>&1 &
+nohup python3 /home/wvv/novel_downloader/web.py >> flasklog.txt 2>&1 &

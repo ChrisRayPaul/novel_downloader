@@ -21,15 +21,15 @@
     <div class="row">
         <div class="col-md-12">
 
-            <div class="page-header"  align="center">
-                <h1>欢迎使用在线小说下载服务 v0.1</h1>
+            <div class="page-header" align="center">
+                <h1>欢迎使用在线小说下载服务 v0.8</h1>
             </div>
             <br>
             <p>
                 <strong>关于本站：</strong>
             <ul>
                 <li>本网站提供在线小说网站内容抓取打包下载业务。</li>
-                <li>下载文件为zip格式，采用LZMA算法进行压缩，请采用相应软件进行下载后解压缩。windows上推荐使用<a
+                <li>下载文件为zip格式，请采用相应软件进行下载后解压缩。windows上推荐使用<a
                         target="_blank" href="http://www.7-zip.org/download.html">7zip</a>进行解压。
                 </li>
                 <li>本网站仅供教学研究，请勿用于商业用途。</li>
@@ -53,7 +53,7 @@
             </p>
             <br> <br>
             <p>
-                <strong>当前下载链接：</strong><a target="_blank" href="{{name}}" class="label label-warning">{{name}}</a>
+                <strong>当前下载链接：</strong><a target="_blank" href="{{url}}" class="label label-warning label-lg">{{name}}</a>
             </p>
 
             {% if urlerror %}
@@ -97,9 +97,10 @@
                     <td>{{novel.from}}</td>
                     <td>
                         <div class="progress progress-striped active">
-                            <div id="progressbar{{novel.id}}" class="progress-bar progress-bar-success" role="progressbar"
+                            <div id="progressbar{{novel.id}}" class="progress-bar progress-bar-success"
+                                 role="progressbar"
                                  aria-valuenow="{{novel.state}}"
-                                 aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+                                 aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
                                 <span id="state{{novel.id}}" name="state{{novel.id}}">{{novel.state}}</span>% 完成
                             </div>
                         </div>
@@ -118,10 +119,11 @@
 </div>
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.js"></script>
+{% if not urlerror %}
 <script type="text/javascript">
     $(function () {
         //定时请求刷新
-        var iCount = setInterval(update, 100);
+        var iCount = setInterval(update, 2000);
 
         function update() {
             $.ajax({
@@ -150,8 +152,7 @@
             })//ajax
         }//update
     })
-
-
 </script>
+{% endif %}
 </body>
 </html>

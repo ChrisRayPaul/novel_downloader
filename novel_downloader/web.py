@@ -1,41 +1,18 @@
 # -*- coding:utf-8 -*-
 # from novel_grab import novel_grab
 from flask import Flask, request, render_template
-import time
 import threading
 import json
 import urllib.request, urllib.error
 import os, sys
-
-os.chdir(os.path.join(sys.path[0], "static"))
+import queue
 
 from novel_grab.novel_grab import Downloader
 
-app = Flask(__name__, static_url_path="")
-sites=['http://www.aoyuge.com', 'http://book.zongheng.com','http://www.quanshu.net']
-novels = [  # fake array of posts
-    {
-        'id': 1,
-        'name': '星际穿梭商店 作者：忘记二少',
-        'from': 'http://www.aoyuge.com/32/32363/index.html',
-        'state': 100,
-        'download': '星际穿梭商店 作者：忘记二少.7z',
-    },
-    {
-        'id': 2,
-        'name': '校园小神医 作者：伤贤梦魂',
-        'from': 'http://book.zongheng.com/showchapter/648323.html',
-        'state': 100,
-        'download': '校园小神医 作者：伤贤梦魂.7z',
-    },
-    {
-        'id': 3,
-        'name': '大刁民 作者：仲星羽',
-        'from': 'http://book.zongheng.com/showchapter/43467.html',
-        'state': 100,
-        'download': '大刁民 作者：仲星羽.7z',
-    }
-]
+app = Flask(__name__, static_url_path="")  # omit static
+
+with open(os.path.join(sys.path[0], 'novels.json'), 'r', encoding='utf-8') as gf:  # relative path
+    novels = json.load(gf)
 
 
 def index_novel(u):
@@ -56,14 +33,16 @@ def add_item(n, f, d):
 
 @app.route('/update')
 def update():
-    if grab:
-        if grab.info["id"]:
-            novels[grab.info["id"]]['state'] = "%d" % grab.get_info()["percent"]
-            novels[grab.info["id"]]['name'] = grab.get_info()["novel_name"]
+    for g in grab_list:
+        novels[g.info["id"]]['state'] = "%d" % g.get_info()["percent"]
+        if g.get_info()["percent"] == 100:
+            with open(os.path.join(sys.path[0], 'novels.json'), 'w', encoding='utf-8') as outfile:
+                json.dump(novels, outfile)
+            grab_list.remove(g)
     return json.dumps(novels)
 
 
-grab = None
+grab_list = []
 
 
 @app.route('/')
@@ -76,20 +55,21 @@ def index():
     try:
         urllib.request.urlopen(url, timeout=1000)
     except urllib.error.URLError or urllib.error.HTTPError as e:
-        return render_template('index.html', name=url, urlerror=str(e.reason))
+        return render_template('index.html', url=url, sites=grab.get_info()["supported_sites"], urlerror=str(e.reason))
+    grab = Downloader()
+    if not grab.set_url(url):
+        return render_template('index.html', url=url, sites=grab.get_info()["supported_sites"], urlerror="页面地址并非全部章节页面")
     nid = index_novel(url)
     if nid < 0:  # first add
-        grab = Downloader(url)
-        grab.info["url"] = url
-        threading.Thread(target=grab.start).start()
+        grab.start()
+        grab_list.append(grab)
         _, grab.info["id"] = add_item(n=grab.get_info()["novel_name"], f=url, d=grab.get_info()["file_name"])
-        print(grab.get_info())
-        return render_template('index.html', sites=sites,
-                               name=url, novels=novels)
+        return render_template('index.html', sites=grab.get_info()["supported_sites"],
+                               name=grab.get_info()["novel_name"], url=url, novels=novels)
     else:
 
-        return render_template('index.html', alreadyid=nid + 1, sites=sites,
-                               name=url, novels=novels)
+        return render_template('index.html', alreadyid=nid + 1, sites=grab.get_info()["supported_sites"],
+                               name=grab.get_info()["novel_name"], url=url, novels=novels)
     return "invalid."
 
 
@@ -97,4 +77,5 @@ if __name__ == '__main__':
     """
     insert d.weolee.com:777?   before your novel chapters index page.
     """
-    app.run(host='0.0.0.0', debug=True, port=777)
+    os.chdir(os.path.join(sys.path[0], "static"))  # switch for download
+    app.run(host='0.0.0.0', debug=True, port=777)  # todo 生产环境运行
