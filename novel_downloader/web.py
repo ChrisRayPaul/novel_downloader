@@ -42,6 +42,7 @@ def update():
     return json.dumps(novels)
 
 
+grab = Downloader()
 grab_list = []
 
 
@@ -56,7 +57,6 @@ def index():
         urllib.request.urlopen(url, timeout=1000)
     except urllib.error.URLError or urllib.error.HTTPError as e:
         return render_template('index.html', url=url, sites=grab.get_info()["supported_sites"], urlerror=str(e.reason))
-    grab = Downloader()
     if not grab.set_url(url):
         return render_template('index.html', url=url, sites=grab.get_info()["supported_sites"], urlerror="页面地址并非全部章节页面")
     nid = index_novel(url)
