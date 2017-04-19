@@ -1,11 +1,10 @@
 # -*- coding:utf-8 -*-
 # from novel_grab import novel_grab
 from flask import Flask, request, render_template
-import threading
 import json
 import urllib.request, urllib.error
-import os, sys
-import queue
+import os
+import sys
 
 from novel_grab.novel_grab import Downloader
 
@@ -56,9 +55,11 @@ def index():
     try:
         urllib.request.urlopen(url, timeout=1000)
     except urllib.error.URLError or urllib.error.HTTPError as e:
-        return render_template('index.html', url=url, sites=grab.get_info()["supported_sites"], urlerror=str(e.reason))
+        return render_template('index.html', url=url, sites=grab.get_info()["supported_sites"], urlerror=str(e.reason),
+                               novels=novels)
     if not grab.set_url(url):
-        return render_template('index.html', url=url, sites=grab.get_info()["supported_sites"], urlerror="页面地址并非全部章节页面")
+        return render_template('index.html', url=url, sites=grab.get_info()["supported_sites"], urlerror="页面地址并非全部章节页面",
+                               novels=novels)
     nid = index_novel(url)
     if nid < 0:  # first add
         grab.start()
@@ -75,7 +76,7 @@ def index():
 
 if __name__ == '__main__':
     """
-    insert d.weolee.com:777?   before your novel chapters index page.
+    insert d.weolee.com:666?   before your novel chapters index page.
     """
     os.chdir(os.path.join(sys.path[0], "static"))  # switch for download
     app.run(host='0.0.0.0', debug=True, port=777)  # todo 生产环境运行

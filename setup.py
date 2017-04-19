@@ -8,7 +8,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 setup(
     name='AIST_novel_downloader',
-    version='0.1',
+    version='1.0.0',
     description='novel downloader service',
     long_description=long_description,
     author='winxos',
@@ -22,9 +22,6 @@ setup(
         #   4 - Beta
         #   5 - Production/Stable
         'Development Status :: 3 - Alpha',
-
-        # Indicate who your project is intended for
-        'Intended Audience :: End Users/Desktop',
         'Topic :: Utilities',
 
         # Pick your license as you wish (should match "license" above)

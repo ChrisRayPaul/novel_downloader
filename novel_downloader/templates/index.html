@@ -22,7 +22,7 @@
         <div class="col-md-12">
 
             <div class="page-header" align="center">
-                <h1>欢迎使用在线小说下载服务 v0.8</h1>
+                <h1>欢迎使用在线小说下载服务 v1.0.0</h1>
             </div>
             <br>
             <p>
@@ -40,7 +40,7 @@
                 <strong>使用方法：</strong>
             <ol>
                 <li>在所支持的网站页面搜索喜欢的小说，进入小说目录页面。</li>
-                <li>在页面地址栏最前方加入d.weolee.com:777?</li>
+                <li>在页面地址栏最前方加入d.weolee.com:666?</li>
                 <li>页面会自动跳转到本网站，等待小说下载完成，点击对应下载按钮完成小说下载。</li>
             </ol>
             </p>
@@ -48,27 +48,28 @@
             <p>
                 <strong>目前支持网站列表：</strong>
                 {% for site in sites %}
-                <a href="{{site}}" target="_blank" class="label label-primary">{{site}}</a>
+                    <a href="{{ site }}" target="_blank" class="label label-primary">{{ site }}</a>
                 {% endfor %}
             </p>
             <br> <br>
             <p>
-                <strong>当前下载链接：</strong><a target="_blank" href="{{url}}" class="label label-warning label-lg">{{name}}</a>
+                <strong>当前下载链接：</strong><a target="_blank" href="{{ url }}"
+                                           class="label label-warning label-lg">{{ name }}</a>
             </p>
 
             {% if urlerror %}
-            <p>
-                <span class="label label-danger">发生异常，请检查网址是否正确。</span>错误代码：<font color="red">{{urlerror}}</font>
-            </p>
-            {% else %}
-
-            {% if alreadyid %}
-            <p>
-                <span class="label label-success">文件已经存在，请直接下载。</span>
-                <a href="#state{{alreadyid}}"> <font color="red">#{{alreadyid}}</font></a>
-            </p>
+                <p>
+                    <span class="label label-danger">发生异常，请检查网址是否正确。</span>错误代码：<font color="red">{{ urlerror }}</font>
+                </p>
             {% endif %}
 
+            {% if alreadyid %}
+                <p>
+                    <span class="label label-success">文件已经存在，请直接下载。</span>
+                    <a href="#state{{ alreadyid }}"> <font color="red">#{{ alreadyid }}</font></a>
+                </p>
+            {% endif %}
+            <p class="label label-success">已经下载小说列表：</p>
             <table class="table table-condensed table-hover">
                 <thead>
                 <tr>
@@ -91,36 +92,37 @@
                 </thead>
                 <tbody>
                 {% for novel in novels %}
-                <tr id="row{{novel.id}}">
-                    <td>{{novel.id}}</td>
-                    <td>{{novel.name}}</td>
-                    <td>{{novel.from}}</td>
-                    <td>
-                        <div class="progress progress-striped active">
-                            <div id="progressbar{{novel.id}}" class="progress-bar progress-bar-success"
-                                 role="progressbar"
-                                 aria-valuenow="{{novel.state}}"
-                                 aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                                <span id="state{{novel.id}}" name="state{{novel.id}}">{{novel.state}}</span>% 完成
+                    <tr id="row{{ novel.id }}">
+                        <td>{{ novel.id }}</td>
+                        <td>{{ novel.name }}</td>
+                        <td>{{ novel.from }}</td>
+                        <td>
+                            <div class="progress progress-striped active">
+                                <div id="progressbar{{ novel.id }}" class="progress-bar progress-bar-success"
+                                     role="progressbar"
+                                     aria-valuenow="{{ novel.state }}"
+                                     aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                    <span id="state{{ novel.id }}" name="state{{ novel.id }}">{{ novel.state }}</span>%
+                                    完成
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <a id="download{{novel.id}}" class="btn btn-primary btn-sm" disabled="disabled"
-                           href="{{novel.download}}">下载</a>
-                    </td>
-                </tr>
+                        </td>
+                        <td>
+                            <a id="download{{ novel.id }}" class="btn btn-primary btn-sm" disabled="disabled"
+                               href="{{ novel.download }}">下载</a>
+                        </td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>
-            {% endif %}
+
         </div>
     </div>
 </div>
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.js"></script>
 {% if not urlerror %}
-<script type="text/javascript">
+    <script type="text/javascript">
     $(function () {
         //定时请求刷新
         var iCount = setInterval(update, 2000);
@@ -152,7 +154,8 @@
             })//ajax
         }//update
     })
-</script>
+
+    </script>
 {% endif %}
 </body>
 </html>
